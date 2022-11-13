@@ -11,9 +11,9 @@ export default function StudentData() {
   const [fees,setFees] = useState("")
   const {id} = useParams();
   console.log(id)
-  const getData = ()=>{
+  const getData = async()=>{
       
-      fetch(`http://localhost:4000/student/${id}`,{
+      await fetch(`http://localhost:4000/student/${id}`,{
         mode: 'cors',
         headers: {
           'Access-Control-Allow-Origin':'*'
@@ -23,13 +23,25 @@ export default function StudentData() {
       .then((obj)=>obj.json()) 
       .then((value)=>{
           setStudent(value);
-          console.log(student)
+          // console.log("first")
+          // console.log(student)
+          // console.log("first")
+
+          if(student.dest === "Bhavani")
+            setFees("8000")
+          // if(student.dest === "Erode")
+          //   setFees("8000")
+          // if(student.dest === "Tirupur")
+          //   setFees("12000")
+          // if(student.dest === "Nasiyanur")
+          //   setFees("7000")
+          console.log(fees)
       })  
   }
 
   useEffect(()=>{
       getData();
-  },[])
+  },[id])
 
 
   return (
@@ -37,15 +49,13 @@ export default function StudentData() {
 
         <div className="container stud-data">
           <div className="content">
-          <h5>Name : {student.sname}</h5>
-          <h6>Bus Number : {student.bno}</h6>
-          <h6>Destination : {student.dest}</h6>
-          <h6>Roll Number : {student.rollNo}</h6>
+          <h5 className='detail'>Name : {student.sname}</h5>
+          <h6 className='detail'>Bus Number : {student.bno}</h6>
+          <h6 className='detail'>Destination : {student.dest}</h6>
+          <h6 className='detail'>Roll Number : {student.rollNo}</h6>
           
           {
             (function(){
-
-
 
               if(student.status=='yes')
               {
@@ -57,7 +67,9 @@ export default function StudentData() {
                 return(
                   <>
                   <h5 style={{color:'red'}}>Not Paid</h5>
-                  <button className='btn btn-success'>Pay</button>
+                  <form action={`http://localhost:4000/update/${student._id}`} method="post">
+                    <button type='submit' className='btn btn-success'>Pay {fees}</button>
+                  </form>
                   </>
                 )
               }

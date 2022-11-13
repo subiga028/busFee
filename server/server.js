@@ -3,7 +3,6 @@ const express = require('express')
 const cors = require('cors')
 const bus = require('./models/busModel')
 const stud = require('./models/studentModel')
-const { findOneAndUpdate, find } = require('./models/busModel')
 
 
 const app = express()
@@ -23,7 +22,8 @@ app.post('/newStudent',async(req,res)=>{
     const data = new stud(req.body)
     data.save()
     console.log(data)
-    res.json(data)
+    // res.json(data)
+    res.redirect('http://localhost:3000/studentDetails')
 })
 
 
@@ -33,11 +33,38 @@ app.get('/allDetails',async(req,res)=>{
 
 })
 
+
+
+
+
+
+
+
+
+
+
+
+
 app.get('/student/:id',async(req,res)=>{
     console.log(req.params.id)
     const data = await stud.findById(req.params.id)
+    console.log(data)
     res.json(data)
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.post('/pay',async(req,res)=>{
     await bus.findOneAndUpdate({rollNo:req.body.rollNo},{$set:{"status":"yes"}})
@@ -64,9 +91,15 @@ app.get('/bus/catalog',async(req,res)=>{
     })
 })
 
+app.post('/update/:id',async(req,res)=>{
+    const data = await stud.findByIdAndUpdate(req.params.id,{status:'yes'})
+    console.log("first")
+    res.redirect(`http://localhost:3000/studentData/${req.params.id}`)
+})
+
 app.post('/status',async(req,res)=>{
     console.log("first")
-    const data = await bus.find({rollNo:req.body.rollNo});
+    const data = await stud.find({rollNo:req.body.rollNo});
     
     res.json(data);
 })
